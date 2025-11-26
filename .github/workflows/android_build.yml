@@ -2,7 +2,7 @@ name: Capacitor Android Build
 
 on:
   push:
-    branches: [ main ] # main branch ကို push တိုင်း ဒီအလုပ်ကို လုပ်ဆောင်ပါ။
+    branches: [ master ] # main branch ကို push တိုင်း ဒီအလုပ်ကို လုပ်ဆောင်ပါ။
 
 jobs:
   build_android:
