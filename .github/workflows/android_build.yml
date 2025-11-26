@@ -1,39 +1,42 @@
 name: Capacitor Android Build
 
+# Build လုပ်ငန်းစဉ်ကို master branch ကို push လုပ်တိုင်း စတင်မည်
 on:
   push:
-    branches: [ master ] # main branch ကို push တိုင်း ဒီအလုပ်ကို လုပ်ဆောင်ပါ။
+    branches: [ master ]
+  # Actions tab မှ manual စတင်နိုင်ရန် ထည့်သွင်းထားသည်
+  workflow_dispatch:  
 
 jobs:
   build_android:
+    # Build လုပ်ရန် Ubuntu Server ကို အသုံးပြုမည်
     runs-on: ubuntu-latest
 
     steps:
       # 1. Source Code ကို Checkout လုပ်ခြင်း
-      - name: Checkout Code
+      - name: Checkout Code 
         uses: actions/checkout@v4
 
-      # 2. Node.js ကို Setup လုပ်ခြင်း (Capacitor/Web App အတွက်)
+      # 2. Node.js ကို Setup လုပ်ခြင်း (Web App Build အတွက်)
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20' # သင့် project လိုအပ်တဲ့ Node version ကို ရွေးချယ်ပါ။
+          node-version: '20' 
           cache: 'npm'
 
-      # 3. Web Dependencies တွေကို Install လုပ်ခြင်း
+      # 3. Web Dependencies များကို Install လုပ်ခြင်း
       - name: Install Web Dependencies
         run: npm install
 
-      # 4. Web Assets တွေကို Build လုပ်ခြင်း (e.g. Ionic/React/Vue build)
-      # ဒီနေရာမှာ သင့်ရဲ့ package.json ထဲက 'build' script ကို run ပါမယ်။
+      # 4. Web Assets များကို Build လုပ်ခြင်း
       - name: Build Web Assets
         run: npm run build
         
-      # 5. Capacitor Dependencies ကို Install လုပ်ခြင်း (Android package ထပ်လိုအပ်နိုင်)
+      # 5. Capacitor Dependencies ကို Install လုပ်ခြင်း (အကယ်၍ လိုအပ်ပါက)
       - name: Install Capacitor Android Dependency
         run: npm install @capacitor/android
 
-      # 6. Web Assets တွေကို Android Project ထဲကို Copy ကူးခြင်း
+      # 6. Web Assets များကို Android Project ထဲသို့ Copy ကူးခြင်း
       - name: Copy Web Assets to Android
         run: npx cap copy android
       
@@ -49,21 +52,18 @@ jobs:
 
       # 8. Gradle Wrapper ကို Execute ခွင့်ပြုခြင်း
       - name: Grant execute permission for gradlew
-        # Capacitor မှာ Android project က 'android' folder ထဲမှာ ရှိတတ်ပါတယ်။
         run: chmod +x android/gradlew
 
-      # 9. Debug APK ကို Build လုပ်ခြင်း
-           run:   |
-                  cd android
-                    ./gradlew assembleDebug
-       #10
+      # 9. Debug APK ကို Build လုပ်ခြင်း (Directory ပြဿနာဖြေရှင်းပြီး)
       - name: Build Debug APK
-        run: ./android/gradlew assembleDebug
+        run: |
+          cd android # အရေးကြီး: android folder ထဲသို့ ဝင်ခြင်း
+          ./gradlew assembleDebug
 
-      # 11. Build ပြီးစီးတဲ့ APK ဖိုင်ကို Artifact အဖြစ် သိမ်းဆည်းခြင်း
+      # 10. Build ပြီးစီးသော APK ဖိုင်ကို Artifact အဖြစ် သိမ်းဆည်းခြင်း
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
           name: my-capacitor-app-debug
-          # သင့် project ရဲ့ output path ကို စစ်ဆေးပါ။ ဒီလမ်းကြောင်းက အများဆုံး ဖြစ်ပါတယ်။
+          # output path ကို android folder အောက်မှာ ညွှန်ပြခြင်း
           path: android/app/build/outputs/apk/debug/app-debug.apk
