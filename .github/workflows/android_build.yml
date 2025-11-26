@@ -36,9 +36,10 @@ jobs:
       - name: Install Capacitor Android Dependency
         run: npm install @capacitor/android
 
-      # 6. Web Assets များကို Android Project ထဲသို့ Copy ကူးခြင်း
-      - name: Copy Web Assets to Android
-        run: npx cap copy android
+      # 6. Web Assets များနှင့် Native Configuration ကို Sync လုပ်ခြင်း (အရေးကြီးသောပြင်ဆင်ချက်)
+      - name: Sync Capacitor Native Project Files
+        run: npx cap sync android 
+        # Note: ဤ command သည် capacitor.settings.gradle ကို ဖန်တီးပေးသည်။
       
       # --- Android Native Build စတင်ခြင်း ---
 
@@ -54,10 +55,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x android/gradlew
 
-      # 9. Debug APK ကို Build လုပ်ခြင်း (Directory ပြဿနာဖြေရှင်းပြီး)
+      # 9. Debug APK ကို Build လုပ်ခြင်း
       - name: Build Debug APK
         run: |
-          cd android # အရေးကြီး: android folder ထဲသို့ ဝင်ခြင်း
+          cd android # မှန်ကန်သော directory သို့ ဝင်ခြင်း (Directory Error ဖြေရှင်းပြီး)
           ./gradlew assembleDebug
 
       # 10. Build ပြီးစီးသော APK ဖိုင်ကို Artifact အဖြစ် သိမ်းဆည်းခြင်း
@@ -65,5 +66,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: my-capacitor-app-debug
-          # output path ကို android folder အောက်မှာ ညွှန်ပြခြင်း
           path: android/app/build/outputs/apk/debug/app-debug.apk
