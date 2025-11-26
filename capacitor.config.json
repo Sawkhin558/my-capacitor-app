@@ -1,0 +1,5 @@
+{
+  "appId": "com.yourname.myapp",
+  "appName": "MyApp",
+  "webDir": "# Git initializegit init# .gitignore file createecho 'node_modules/android/ios/.DS_Store*.tgz*.tar.gz' > .gitignore"
+}

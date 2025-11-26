@@ -1,0 +1,65 @@
+name: Capacitor Android Build
+
+on:
+  push:
+    branches: [ main ] # main branch ကို push တိုင်း ဒီအလုပ်ကို လုပ်ဆောင်ပါ။
+
+jobs:
+  build_android:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Source Code ကို Checkout လုပ်ခြင်း
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 2. Node.js ကို Setup လုပ်ခြင်း (Capacitor/Web App အတွက်)
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # သင့် project လိုအပ်တဲ့ Node version ကို ရွေးချယ်ပါ။
+          cache: 'npm'
+
+      # 3. Web Dependencies တွေကို Install လုပ်ခြင်း
+      - name: Install Web Dependencies
+        run: npm install
+
+      # 4. Web Assets တွေကို Build လုပ်ခြင်း (e.g. Ionic/React/Vue build)
+      # ဒီနေရာမှာ သင့်ရဲ့ package.json ထဲက 'build' script ကို run ပါမယ်။
+      - name: Build Web Assets
+        run: npm run build
+        
+      # 5. Capacitor Dependencies ကို Install လုပ်ခြင်း (Android package ထပ်လိုအပ်နိုင်)
+      - name: Install Capacitor Android Dependency
+        run: npm install @capacitor/android
+
+      # 6. Web Assets တွေကို Android Project ထဲကို Copy ကူးခြင်း
+      - name: Copy Web Assets to Android
+        run: npx cap copy android
+      
+      # --- Android Native Build စတင်ခြင်း ---
+
+      # 7. Java Development Kit (JDK) ကို Setup လုပ်ခြင်း
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      # 8. Gradle Wrapper ကို Execute ခွင့်ပြုခြင်း
+      - name: Grant execute permission for gradlew
+        # Capacitor မှာ Android project က 'android' folder ထဲမှာ ရှိတတ်ပါတယ်။
+        run: chmod +x android/gradlew
+
+      # 9. Debug APK ကို Build လုပ်ခြင်း
+      - name: Build Debug APK
+        run: ./android/gradlew assembleDebug
+
+      # 10. Build ပြီးစီးတဲ့ APK ဖိုင်ကို Artifact အဖြစ် သိမ်းဆည်းခြင်း
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: my-capacitor-app-debug
+          # သင့် project ရဲ့ output path ကို စစ်ဆေးပါ။ ဒီလမ်းကြောင်းက အများဆုံး ဖြစ်ပါတယ်။
+          path: android/app/build/outputs/apk/debug/app-debug.apk
