@@ -1,3 +1,9 @@
+// capacitor.config.json
+{
+  // ...
+  "webDir": "build", 
+  // ...
+}
 {
   "appId": "com.yourname.myapp",
   "appName": "MyApp",

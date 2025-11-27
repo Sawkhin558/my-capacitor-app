@@ -1,3 +1,16 @@
+"scripts": {
+  "test": "echo \"Error: no test specified\" && exit 1",
+  // React ကို သုံးမယ်ဆိုရင် Build Script ကို ဤသို့ ပြင်ရပါမယ်။
+  "build": "react-scripts build"
+},
+"dependencies": {
+  "@capacitor/android": "^7.4.4",
+  "@capacitor/cli": "^7.4.4",
+  "@capacitor/core": "^7.4.4",
+  "react": "^18.3.1",
+  "react-dom": "^18.3.1",
+  "react-scripts": "^5.0.1" 
+}
 {
   "name": "my-capacitor-app",
   "version": "1.0.0",
@@ -14,6 +27,9 @@
   "dependencies": {
     "@capacitor/android": "^7.4.4",
     "@capacitor/cli": "^7.4.4",
-    "@capacitor/core": "^7.4.4"
+    "@capacitor/core": "^7.4.4",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "react-scripts": "^5.0.1"
   }
 }
